@@ -1,0 +1,83 @@
+require('dotenv').config();
+const express = require('express');
+const multer = require('multer');
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+const {signUp,loginUser} = require('../Controllers/UserController');
+const { addRefreshToken, removeRefreshToken, findRefreshToken } = require('../Controllers/RefreshTokenController');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "./uploads/")
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname)
+    }
+})
+
+const multipart = multer({ storage: storage });
+
+
+router.get("/", async (req,res) => {
+    res.status(200).json({messsage: "Hello World!"})
+})
+
+router.get("/signup", async (req,res) => {
+    res.status(200).json({message: "On the signup page"})
+})
+
+router.post("/signup",multipart.single("avatar"), async (req,res) => {
+    console.log("request",req.body);
+    let user = await signUp(req.body);
+
+    console.log("user",user);
+    if(user.status){
+        
+        res.status(201).json(user.result.message);
+    }else{
+        res.status(400).json(user.result.message);
+    }
+    
+})
+
+router.post("/login",multipart.single("avatar"), async (req,res) => {
+    console.log("request",req.body);
+    let response = await loginUser(req.body);
+    console.log("Response", response);
+    if(response.status){
+        let payload = {email: response.result.message.email, username: response.result.message.username}
+        let token = jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: process.env.TOKEN_EXPIRY});
+        let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY});
+        let temp = await addRefreshToken({email: payload.email,token: refreshToken,username: payload.username});
+        console.log("temp",temp)
+        res.status(201).json({token: token, refreshToken: refreshToken});
+    }else{
+        res.status(400).json(response.result);
+    }
+
+})
+
+router.get("/logout", async (req,res) => {
+    let response = await removeRefreshToken(req.body);
+    console.log("Response", response);
+    if(response.status){
+        res.status(200).json(response.result);
+    }else{
+        res.status(400).json(response.result);
+    }
+})
+
+// router.post("/token", async (req,res) => {
+//     const {refreshToken} = req.body;
+//     let response = await findRefreshToken({refreshToken});
+
+// })
+
+
+
+
+
+
+
+
+
+module.exports = router
