@@ -30,7 +30,7 @@ app.get("/", async (req,res) => {
 })
 
 
-const PORT = 3300
+const PORT = process.env.PORT || 8005; 
 
 app.listen(PORT, () => {
     console.log("server is listening on PORT: " +PORT)
