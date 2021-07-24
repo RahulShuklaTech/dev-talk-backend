@@ -45,5 +45,16 @@ const loginUser = async ({username, password}) => {
 
 }
 
+const findUser = async (username) => {  
+    try{ 
+        let user = await UserModel.findOne({username});
+        return {status: true, result: {message: user}};
+    }catch(e){
+        console.log(e.message);
+        return {status: false, result: {message: e}};
+    }
+}
 
-module.exports = {signUp,loginUser}
+
+
+module.exports = {signUp,loginUser,findUser}

@@ -56,7 +56,8 @@ router.post("/login",multipart.single("avatar"), async (req,res) => {
 
 })
 
-router.get("/logout", async (req,res) => {
+router.post("/logout", async (req,res) => {
+    console.log("req body",req)
     let response = await removeRefreshToken(req.body);
     console.log("Response", response);
     if(response.status){
@@ -66,11 +67,23 @@ router.get("/logout", async (req,res) => {
     }
 })
 
-// router.post("/token", async (req,res) => {
-//     const {refreshToken} = req.body;
-//     let response = await findRefreshToken({refreshToken});
+router.post("/token", async (req,res) => {
+    const {refreshToken} = req.body;
+    if(!refreshToken){
+        res.status(403).json({"message": "Refresh token is missing"});
+    }
+    try {
+        let payload  = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        let newPayload = {email: payload.email,username: payload.username};
+        let token = jwt.sign(newPayload, process.env.TOKEN_SECRET, {expiresIn: process.env.TOKEN_EXPIRY});
+        res.status(200).json({token});
+    }catch(e){
+        console.log("error while getting token", e.message);
+        res.status(403).json({"message": "Invalid Token"});
+    } 
+    
 
-// })
+})
 
 
 
