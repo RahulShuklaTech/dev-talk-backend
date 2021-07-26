@@ -5,7 +5,7 @@ const morgan = require("morgan")
 const mongoose = require("mongoose");
 
 
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect(process.env.MONGO_ATLAS_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -35,7 +35,7 @@ app.get("/", async (req,res) => {
 })
 
 
-const PORT =  3300; 
+const PORT = process.env.PORT || 3300; 
 
 app.listen(PORT, () => {
     console.log("server is listening on PORT: " +PORT)
