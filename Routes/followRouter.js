@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { findUser, followUser, getFollowerSuggestions } = require('../Controllers/UserController');
+const {  followUser, getFollowerSuggestions } = require('../Controllers/UserController');
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
@@ -33,6 +33,9 @@ const validateRequest = (req, res, next) => {
         });
     }
 }
+
+
+
 
 
 

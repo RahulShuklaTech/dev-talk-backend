@@ -22,17 +22,20 @@ app.use(express.json());
 const authRouter = require("./Routes/authRouter");
 const postRouter = require("./Routes/postRouter");
 const followRouter = require("./Routes/followRouter");
+const profileRouter = require("./Routes/profileRouter");
+
 
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
 app.use("/follow", followRouter);
+app.use("/profile", profileRouter);
 
 app.get("/", async (req,res) => {
     res.status(200).json({messsage: "Hello World!"})
 })
 
 
-const PORT = process.env.PORT || 3300; 
+const PORT =  3300; 
 
 app.listen(PORT, () => {
     console.log("server is listening on PORT: " +PORT)

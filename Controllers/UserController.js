@@ -1,8 +1,13 @@
 const UserModel = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 
+const defaultPic = "/images/avatar.png";
+const signUp = async ({ name,username, email, password, avatar }) => {
 
-const signUp = async ({ username, email, password, avatar }) => {
+    if(!avatar){
+        avatar = defaultPic;
+    }
+
     let emailRegex = /.*@*\../;
     if (!emailRegex.test(email)) {
         return { status: false, result: { message: { email: 'Please enter a valid email address' } } };
@@ -17,7 +22,7 @@ const signUp = async ({ username, email, password, avatar }) => {
     let hash = await bcrypt.hash(password, 10);
 
     try {
-        let user = new UserModel({ username, email, password: hash, avatar });
+        let user = new UserModel({ name ,username, email, password: hash, avatar });
         let savedUser = await user.save();
         return { status: true, result: { message: savedUser } };
     } catch (e) {
@@ -47,7 +52,15 @@ const loginUser = async ({ username, password }) => {
 
 const findUser = async (username) => {
     try {
-        let user = await UserModel.findOne({ username });
+        let user = await UserModel.findOne({ username }).populate({
+            
+            path: "posts",
+            populate: {
+                path: "owner",
+            },
+            
+           
+        });
         return { status: true, result: { message: user } };
     } catch (e) {
         console.log(e.message);

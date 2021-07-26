@@ -11,7 +11,7 @@ const {createPost,deletePost,likePost,postDetails, getAllPosts} = require('../Co
 
  const validateRequest = (req, res, next) => { 
     let authHeader = req.headers.authorization;
-    console.log(authHeader,req.body);
+    
     if (!authHeader) { 
         return res.status(403).json({
             message: "You must be logged in to perform this action"
@@ -131,7 +131,6 @@ router.get('/',validateRequest, async (req, res) => {
 
 
 
-getFollowerSuggestions("rahul")
 
 
 module.exports = router

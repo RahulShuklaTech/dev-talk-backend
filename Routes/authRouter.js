@@ -26,10 +26,8 @@ router.get("/signup", async (req,res) => {
 })
 
 router.post("/signup",multipart.single("avatar"), async (req,res) => {
-    console.log("request",req.body);
+    
     let user = await signUp(req.body);
-
-    console.log("user",user);
     if(user.status){
         
         res.status(201).json(user.result.message);
@@ -49,7 +47,7 @@ router.post("/login",multipart.single("avatar"), async (req,res) => {
         let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY});
         let temp = await addRefreshToken({email: payload.email,token: refreshToken,username: payload.username});
         console.log("temp",temp)
-        res.status(201).json({token: token, refreshToken: refreshToken});
+        res.status(201).json({token: token, refreshToken: refreshToken, userId: response.result.message._id});
     }else{
         res.status(400).json(response.result);
     }
