@@ -5,7 +5,7 @@ const morgan = require("morgan")
 const mongoose = require("mongoose");
 
 
-mongoose.connect(process.env.MONGO_ATLAS_URL, {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -21,16 +21,18 @@ app.use(express.json());
 
 const authRouter = require("./Routes/authRouter");
 const postRouter = require("./Routes/postRouter");
+const followRouter = require("./Routes/followRouter");
 
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use("/follow", followRouter);
 
 app.get("/", async (req,res) => {
     res.status(200).json({messsage: "Hello World!"})
 })
 
 
-const PORT = process.env.PORT || 8005; 
+const PORT = process.env.PORT || 3300; 
 
 app.listen(PORT, () => {
     console.log("server is listening on PORT: " +PORT)

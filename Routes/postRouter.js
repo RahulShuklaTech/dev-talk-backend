@@ -2,14 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const {findUser,} = require('../Controllers/UserController');
-const {createPost,deletePost,likePost,postDetails} = require('../Controllers/PostController');
+const {findUser, getFollowerSuggestions,} = require('../Controllers/UserController');
+const {createPost,deletePost,likePost,postDetails, getAllPosts} = require('../Controllers/PostController');
 
 
 
 
 
-const validateRequest = (req, res, next) => { 
+ const validateRequest = (req, res, next) => { 
     let authHeader = req.headers.authorization;
     console.log(authHeader,req.body);
     if (!authHeader) { 
@@ -107,9 +107,31 @@ router.delete('/:postId',validateRequest,async (req, res) => {
     }
 })
   
+router.get('/',validateRequest, async (req, res) => {
+
+    try {
+        let posts = await getAllPosts(req.username);
+        if(posts.status){
+            res.status(200).json({status: true,message: posts.result.message})
+        }else{
+            res.status(403).json({status: false,message: posts.result.message})
+        }
+
+    }catch(e){
+        console.log("error",e.message)
+        res.status(403).json({status: false,message: "Error while getting all posts"+e.message})
+    }
+ 
+})
 
 
 
+
+
+
+
+
+getFollowerSuggestions("rahul")
 
 
 module.exports = router

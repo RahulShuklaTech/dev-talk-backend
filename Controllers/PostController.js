@@ -80,7 +80,48 @@ const deletePost = async (postId, user) => {
 }
 
 
-const getAllPosts = async () => { }
+const getAllPosts = async (username) => {
+
+    try {
+        let usersPosts = await UserModel.findOne({username}).populate({
+            path: "posts",
+            populate: {
+                path: "owner",
+            }
+        });
+        console.log("usersPosts", usersPosts);
+        let userFriends = usersPosts.following;
+        let friendsPosts = [];
+        for(let friend of userFriends){
+            let friendPost = await getFriendsPosts(friend);
+            if(friendPost.status){
+                friendsPosts.push(...friendPost.result.message);
+            }
+            
+        }
+        let allPosts = friendsPosts.concat(usersPosts.posts)
+        return { status: true, result: { message: allPosts } }
+    } catch (e) {
+        return { status: false, result: { message: e.message } }
+    }
+ }
+
+const getFriendsPosts = async  (id) => { 
+    try {
+        let friendsPosts = await UserModel.findOne({_id: id}).populate({
+            path: "posts",
+            populate: {
+                path: "owner",
+            }
+        });
+        console.log("friendsPosts", friendsPosts);
+        return { status: true, result: { message: friendsPosts.posts } }
+    } catch (e) {
+        return { status: false, result: { message: e.message } }
+    }
+
+}
+
 
 
 // const findLikes = async (id) => { 
@@ -92,4 +133,4 @@ const getAllPosts = async () => { }
 //     }
 // }
 
-module.exports = { createPost, likePost, postDetails, deletePost }
+module.exports = { createPost, likePost, postDetails, deletePost,getAllPosts }
