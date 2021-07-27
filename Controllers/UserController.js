@@ -25,7 +25,7 @@ const signUp = async ({ name,username, email, password, avatar,filename }) => {
     try {
         let user = new UserModel({ name ,username, email, password: hash, avatar,filename });
         let savedUser = await user.save();
-        console.log(".....................",savedUser);
+        
         return { status: true, result: { message: savedUser } };
     } catch (e) {
         console.log("error", e.message)
