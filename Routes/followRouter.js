@@ -65,7 +65,6 @@ router.post("/:toFollow",validateRequest, async (req,res) => {
 
 
 router.get('/',validateRequest, async (req, res) => {
-    console.log("i came here")
     try {
         console.log("user",req.username);
         
