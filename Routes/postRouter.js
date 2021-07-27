@@ -66,7 +66,7 @@ router.post('/like',validateRequest,async (req, res) => {
         // let payload = {owner: user.result.message._id, postId};
 
         let post = await likePost(postId,user.result.message._id);
-        res.status(200).json({message: post.result.message})
+        res.status(200).json({message: post.result})
 
     }catch(e){
         console.log("error",e.message)

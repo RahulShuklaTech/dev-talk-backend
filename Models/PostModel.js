@@ -4,7 +4,7 @@ const postSchema = new mongoose.Schema({
 
     owner: { 
         type: mongoose.SchemaTypes.ObjectId,
-        unique: true,
+        
         ref: 'user'
     },
 

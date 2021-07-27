@@ -15,8 +15,8 @@ const createPost = async ({ owner, content }) => {
         let task = await UserModel.updateOne({ _id: owner }, { $push: { posts: newPost._id } });
         // user.posts.push(post._id);
         //  await task.save();
-
         let response = await PostModel.findOne({ _id: newPost._id }).populate("owner");
+        // let response = await newPost.populate("owner");
         return { status: true, result: { message: response } }
     } catch (e) {
         console.log("createPost", e.message);
@@ -36,13 +36,16 @@ const likePost = async (post, user) => {
             const edittedPost = await PostModel.updateOne({ _id: post }, { $push: { likes: user } });
             const personWhoLiked = await UserModel.updateOne({ _id: user }, { $push: { likedPosts: post } })
             console.log("--------------------",postFound)
-            return { status: true, result: { liked: true, message: postFound } }
+            postFound = await PostModel.findOne({ _id: post }).populate("owner");
+            console.log("--------------------",postFound)
+            return { status: true, result:  postFound  }
 
         } else {
             const edittedPost = await PostModel.updateOne({ _id: post }, { $pull: { likes: user } });
             const personWhoDisliked = await UserModel.updateOne({ _id: user }, { $pull: { likedPosts: post } });
             console.log("--------------------",postFound)
-            return { status: true, result: { liked: false, message: postFound } }
+            postFound = await PostModel.findOne({ _id: post }).populate("owner");
+            return { status: true, result:  postFound  }
         }
         
 
@@ -97,7 +100,7 @@ const getAllPosts = async (username) => {
                     friendsPosts.push(...friendPost.result.message);
                 }
         }
-        let allPosts = friendsPosts.concat(usersPosts.posts)
+        let allPosts = friendsPosts.concat(usersPosts.posts).sort((a,b) => b.createdAt - a.createdAt  );
         return { status: true, result: { message: allPosts } }
     } catch (e) {
         return { status: false, result: { message: e.message } }

@@ -7,10 +7,13 @@ const {signUp,loginUser} = require('../Controllers/UserController');
 const { addRefreshToken, removeRefreshToken, findRefreshToken } = require('../Controllers/RefreshTokenController');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "./uploads/")
+       
+        cb(null, "./public/uploads/")
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + "-" + file.originalname)
+        let type = file.originalname.split('.').pop();
+        
+        cb(null, req.body.username + "." + type)
     }
 })
 

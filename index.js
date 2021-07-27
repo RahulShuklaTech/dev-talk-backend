@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan")
 const mongoose = require("mongoose");
+const path = require("path");
 
 
 mongoose.connect(process.env.MONGO_ATLAS_URL, {
@@ -18,6 +19,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use( cors({origin: "*"}));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "/public")));
 
 const authRouter = require("./Routes/authRouter");
 const postRouter = require("./Routes/postRouter");
