@@ -33,16 +33,20 @@ const validateRequest = (req, res, next) => {
 }
 
 
-router.get("/:user", async (req, res) => {
+router.get("/:user",validateRequest, async (req, res) => {
     const {user} = req.params;
     const userFound = await findUser(user)
-    res.status(200).json({userFound});
+    try {
+        res.status(200).json({userFound});
+    }catch(err){
+        res.status(400).json({
+            message: "Error in finding user "+err.message
+        });
+    }
+    
 })
 
 
-router.get("/", async (req,res) => {
-    res.status(200).json({messsage: "Hello World!"})
-})
 
 
 

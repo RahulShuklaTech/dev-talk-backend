@@ -20,13 +20,6 @@ const storage = multer.diskStorage({
 const multipart = multer({ storage: storage });
 
 
-router.get("/", async (req,res) => {
-    res.status(200).json({messsage: "Hello World!"})
-})
-
-router.get("/signup", async (req,res) => {
-    res.status(200).json({message: "On the signup page"})
-})
 
 router.post("/signup",multipart.single("avatar"), async (req,res) => {
     
@@ -41,15 +34,12 @@ router.post("/signup",multipart.single("avatar"), async (req,res) => {
 })
 
 router.post("/login",multipart.single("avatar"), async (req,res) => {
-    console.log("request",req.body);
     let response = await loginUser(req.body);
-    console.log("Response", response);
     if(response.status){
         let payload = {email: response.result.message.email, username: response.result.message.username}
         let token = jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: process.env.TOKEN_EXPIRY});
         let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY});
         let temp = await addRefreshToken({email: payload.email,token: refreshToken,username: payload.username});
-        console.log("temp",temp)
         res.status(201).json({token: token, refreshToken: refreshToken, userId: response.result.message._id});
     }else{
         res.status(400).json(response.result);
