@@ -52,7 +52,7 @@ Api will respond to requests at : URL:https://dev-talks-1.herokuapp.com
           required: authorization header
           response: Object conatinaing array of all users suggestions         
     
-   ## profile Endpoints - /profile/          
+    ## profile Endpoints - /profile/          
      -GET
         '/:user': Return user profile object
           required: username as params and  authorization header
