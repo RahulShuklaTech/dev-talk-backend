@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
     },
+    filename: {
+        type: String,
+    },
     posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'posts'

@@ -5,6 +5,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const {signUp,loginUser} = require('../Controllers/UserController');
 const { addRefreshToken, removeRefreshToken, findRefreshToken } = require('../Controllers/RefreshTokenController');
+let avatarName = ""
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
        
@@ -12,8 +13,8 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         let type = file.originalname.split('.').pop();
-        
-        cb(null, req.body.username + "." + type)
+        avatarName = req.body.username + "." + type;     
+        cb(null, avatarName)
     }
 })
 
@@ -22,8 +23,8 @@ const multipart = multer({ storage: storage });
 
 
 router.post("/signup",multipart.single("avatar"), async (req,res) => {
-    
-    let user = await signUp(req.body);
+    let {name,username,email,password,avatar} = req.body;
+    let user = await signUp({name,username,email,password,avatar,filename: avatarName});
     if(user.status){
         
         res.status(201).json(user.result.message);

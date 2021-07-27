@@ -2,11 +2,12 @@ const UserModel = require('../Models/UserModel');
 const bcrypt = require('bcrypt');
 
 const defaultPic = "/images/avatar.png";
-const signUp = async ({ name,username, email, password, avatar }) => {
+const signUp = async ({ name,username, email, password, avatar,filename }) => {
 
     if(!avatar){
         avatar = defaultPic;
     }
+    
 
     let emailRegex = /.*@*\../;
     if (!emailRegex.test(email)) {
@@ -22,8 +23,9 @@ const signUp = async ({ name,username, email, password, avatar }) => {
     let hash = await bcrypt.hash(password, 10);
 
     try {
-        let user = new UserModel({ name ,username, email, password: hash, avatar });
+        let user = new UserModel({ name ,username, email, password: hash, avatar,filename });
         let savedUser = await user.save();
+        console.log(".....................",savedUser);
         return { status: true, result: { message: savedUser } };
     } catch (e) {
         console.log("error", e.message)
