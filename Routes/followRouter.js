@@ -66,7 +66,7 @@ router.post("/:toFollow",validateRequest, async (req,res) => {
 
 router.get('/',validateRequest, async (req, res) => {
     try {
-        console.log("user",req.username);
+        
         
         let followerSuggestions = await getFollowerSuggestions(req.username);
         res.status(200).json({message: followerSuggestions.result.message})
