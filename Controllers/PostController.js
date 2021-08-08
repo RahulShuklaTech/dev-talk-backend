@@ -91,7 +91,8 @@ const getAllPosts = async (username) => {
             populate:["owner"],
         });
         let userID = usersPosts._id.toString();
-        let userFriends = usersPosts.following.filter(item => item !=userID);
+        let userFriends = usersPosts.following;
+        // let userFriends = usersPosts.following.filter(item => item !=userID);
         let friendsPosts = [];
        
         for (let friend of userFriends) {
